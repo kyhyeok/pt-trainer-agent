@@ -4,6 +4,9 @@
 
 ## 구조
 
+- `src/schedule.ts` — 일정 판정 순수 함수: 근무 시간, 겹침, 지난 시간, 대안 시간, 추가·이동.
+- `src/packages.ts` — 회차권 순수 함수: 잔여 횟수, 예약 가능 여부, 24시간 취소 규칙, 출석·노쇼 차감. 에이전트 도구는 일정 변경 시 `bookSession`·`rescheduleSession`·`cancelSession`·`recordAttendance`를 써서 회차권 검사가 빠지지 않게 한다.
+- `src/*.test.ts` — 위 두 모듈의 테스트(`npm test`). 판정 규칙을 바꾸면 테스트를 먼저 고친다.
 - `src/agents/` — 에이전트 모듈. 첫 줄이 `'use agent'`인 파일에서 export한 대문자 함수가 에이전트다. 함수 이름(또는 `agentName` 정적 속성)이 에이전트의 정체성이자 저장소 키다.
 - `src/app.ts` — 라우트 맵(Hono). 에이전트와 커스텀 라우트를 모두 여기서 직접 마운트한다.
 - `src/cloudflare.ts` — Worker 수준 export와 cron 같은 비 HTTP 핸들러.
@@ -12,6 +15,7 @@
 ## 명령어
 
 - `npm run dev` — 개발 서버. `cloudflare/...` 모델은 이 서버에서만 동작한다.
+- `npm test` — 판정 로직 단위 테스트
 - `npm run check:types` — 타입체크
 - `npm run deploy` — 빌드 후 배포. 사용자 승인을 받은 뒤에만 실행한다.
 - `npx flue docs search <검색어>` / `npx flue docs read <경로>` — 설치된 버전의 Flue 문서를 오프라인으로 본다.

@@ -10,6 +10,7 @@
 
 ## 명령어 (`backend/`에서 실행)
 
+- `npm test` — 일정·회차권 판정 로직 단위 테스트(`node --test`, Node 22.18 이상)
 - `npm run check:types` — 타입체크
 - `npm run dev` — 로컬 개발 서버. `cloudflare/...` 모델 호출은 실제 Cloudflare 계정의 Workers AI 사용량으로 잡힌다.
 
