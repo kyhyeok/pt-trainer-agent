@@ -35,6 +35,8 @@
 
 ## 주의
 
+- 회원에게 보낼 초안은 `── 회원에게 보낼 문장(초안) ──` 줄 다음에 쓴다는 형식을 화면(`frontend/src/lib/drafts.ts`)과 약속했다. 화면은 이 줄만 보고 [복사] 버튼을 만든다. `trainer.ts` 규칙 7이나 `SKILL.md` 출력 형식을 바꿀 때는 이 약속과 화면 테스트를 함께 고친다.
+
 - `npx flue run`은 `cloudflare/` 모델이면 `Unknown provider "cloudflare"`로 실패한다. `npm run dev`를 띄우고 HTTP로 테스트한다.
 - 배포된 마이그레이션 항목은 수정하거나 순서를 바꾸지 않는다. 새 태그를 추가한다.
 - `@cf/zai-org/glm-5.3`은 텍스트 전용이다. 이미지를 보내면 `(image omitted)`로 바뀐다. 그래서 사진이 첨부된 메시지만 `@cf/zai-org/glm-5.3-flash`로 처리한다(trainer.ts의 `hasImage`). 사진 메시지는 30~140초 걸린다.
