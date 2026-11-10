@@ -1,0 +1,25 @@
+# 의존성·빌드 산출물
+node_modules/
+dist/
+dist-ssr/
+.wrangler/
+*.tsbuildinfo
+
+# 비밀값 (예시 파일만 커밋)
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Claude Code 개인 설정
+.claude/settings.local.json
+CLAUDE.local.md
+
+# 로컬 도구·OS 파일
+.omc/
+.idea/
+.vscode/
+.DS_Store
+*.log
