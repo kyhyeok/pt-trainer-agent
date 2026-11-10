@@ -8,6 +8,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import * as v from 'valibot';
 import { APPROVAL_SIGNAL, TrainerAssistant } from './agents/trainer.ts';
+import { validateAttachments } from './attachments.ts';
 
 // 회원의 식단·건강 정보가 오가므로 Workers Traces에 대화 내용을 남기지 않는다(모듈 최상단에서 등록해야 기본값을 대신한다).
 // 개발 서버가 의존성 최적화 뒤 같은 isolate에서 이 모듈을 다시 실행하면 두 번째 instrument()가 예외를 던진다.
@@ -71,6 +72,9 @@ app.on('POST', '/agents/pt-trainer/:id', async (c, next) => {
 	if (!body || typeof body !== 'object' || (body as { kind?: unknown }).kind !== 'user') {
 		return c.json({ error: '이 경로로는 트레이너 메시지(kind: "user")만 보낼 수 있습니다' }, 403);
 	}
+	// 잘못된 사진이 대화를 멈추거나 이후 사진 기능을 망가뜨리지 않도록, Flue에 넘기기 전에 검사한다
+	const check = validateAttachments((body as { attachments?: unknown }).attachments);
+	if (!check.ok) return c.json({ error: check.reason }, 400);
 	await next();
 });
 

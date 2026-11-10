@@ -8,6 +8,8 @@
 - `src/packages.ts` — 회차권 순수 함수: 잔여 횟수, 예약 가능 여부, 24시간 취소 규칙, 출석·노쇼 차감. 에이전트 도구는 일정 변경 시 `bookSession`·`rescheduleSession`·`cancelSession`·`recordAttendance`를 써서 회차권 검사가 빠지지 않게 한다.
 - `src/proposals.ts` — 일정 변경 제안(planChange)과 확정 시 재판정(confirmChange). 제안 때 결과와 확정 때 결과가 같을 때만 반영한다.
 - `src/config.ts` — 트레이너 설정(근무 시간, 50분, 24시간)과 KST 현재 시각.
+- `src/attachments.ts` — 첨부 사진 검사(JPEG·PNG·WebP, 표준 base64, 매직 바이트, 4장·약 5MB). app.ts가 Flue에 넘기기 전에 쓴다. 잘못된 base64는 Flue가 500을 내며 대화를 멈추게 하고, 읽을 수 없는 이미지는 대화 기록에 남아 이후 사진 처리를 계속 실패시키기 때문이다.
+- `src/skills/diet-feedback/SKILL.md` — 식단 피드백 스킬(절차, 공통 기준, 안전 규칙, 출력 형식). "공통 기준"은 트레이너가 직접 고쳐 쓰는 부분이다.
 - `src/sample-data.ts` — 시연용 가상 회원 3명과 2주 치 일정. 첫 대화 때 한 번 저장된다.
 - `src/*.test.ts` — 순수 함수 테스트(`npm test`). 판정 규칙을 바꾸면 테스트를 먼저 고친다.
 - `src/agents/trainer.ts` — `TrainerAssistant`(정체성 `pt-trainer`). 조회 도구 3개, 제안 도구 5개, 확정 신호 처리.
@@ -35,6 +37,6 @@
 
 - `npx flue run`은 `cloudflare/` 모델이면 `Unknown provider "cloudflare"`로 실패한다. `npm run dev`를 띄우고 HTTP로 테스트한다.
 - 배포된 마이그레이션 항목은 수정하거나 순서를 바꾸지 않는다. 새 태그를 추가한다.
-- `@cf/zai-org/glm-5.3`은 텍스트 전용이다. 이미지를 보내면 `(image omitted)`로 바뀐다. 이미지가 필요하면 `@cf/zai-org/glm-5.3-flash`처럼 이미지 입력을 받는 모델을 쓴다.
+- `@cf/zai-org/glm-5.3`은 텍스트 전용이다. 이미지를 보내면 `(image omitted)`로 바뀐다. 그래서 사진이 첨부된 메시지만 `@cf/zai-org/glm-5.3-flash`로 처리한다(trainer.ts의 `hasImage`). 사진 메시지는 30~140초 걸린다.
 - `package.json`의 `overrides`로 `@earendil-works/pi-ai`·`pi-agent-core`를 1.4.0에 고정했다. `@flue/runtime` 2.3.0이 `^1.1.0`으로 받지만, 1.5.1(2026-11-09 배포)에서 `Type` export가 빠져 개발 서버가 뜨지 않는다. Flue를 올릴 때 이 고정을 풀 수 있는지 확인한다.
 - 로컬 비밀값은 `.dev.vars`(커밋 금지)에, 배포 비밀값은 `npx wrangler secret put <이름>`으로 넣는다.
