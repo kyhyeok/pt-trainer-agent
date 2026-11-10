@@ -21,7 +21,7 @@
 ## 명령어
 
 - `npm run dev` — 개발 서버(http://localhost:8787). `cloudflare/...` 모델은 이 서버에서만 동작한다. 처음에는 `.dev.vars.example`을 `.dev.vars`로 복사해 `AGENT_TOKEN`을 넣는다.
-- `npm test` — 판정 로직 단위 테스트
+- `npm test` — 판정 로직과 첨부 검사 단위 테스트(모델 호출 없음)
 - `npm run check:types` — 타입체크
 - `npm run deploy` — 빌드 후 배포. 사용자 승인을 받은 뒤에만 실행한다.
 - `npx flue docs search <검색어>` / `npx flue docs read <경로>` — 설치된 버전의 Flue 문서를 오프라인으로 본다.
@@ -39,6 +39,6 @@
 
 - `npx flue run`은 `cloudflare/` 모델이면 `Unknown provider "cloudflare"`로 실패한다. `npm run dev`를 띄우고 HTTP로 테스트한다.
 - 배포된 마이그레이션 항목은 수정하거나 순서를 바꾸지 않는다. 새 태그를 추가한다.
-- `@cf/zai-org/glm-5.3`은 텍스트 전용이다. 이미지를 보내면 `(image omitted)`로 바뀐다. 그래서 사진이 첨부된 메시지만 `@cf/zai-org/glm-5.3-flash`로 처리한다(trainer.ts의 `hasImage`). 사진 메시지는 30~140초 걸린다.
+- `@cf/zai-org/glm-5.3`은 텍스트 전용이다. 이미지를 보내면 `(image omitted)`로 바뀐다. 그래서 사진이 첨부된 메시지만 `@cf/zai-org/glm-5.3-flash`로 처리한다(trainer.ts의 `hasImage`). 사진 메시지는 30~140초 걸리고, 길면 몇 분 걸린다(5단계 측정 5분 30초).
 - `package.json`의 `overrides`로 `@earendil-works/pi-ai`·`pi-agent-core`를 1.4.0에 고정했다. `@flue/runtime` 2.3.0이 `^1.1.0`으로 받지만, 1.5.1(2026-11-09 배포)에서 `Type` export가 빠져 개발 서버가 뜨지 않는다. Flue를 올릴 때 이 고정을 풀 수 있는지 확인한다.
 - 로컬 비밀값은 `.dev.vars`(커밋 금지)에, 배포 비밀값은 `npx wrangler secret put <이름>`으로 넣는다.

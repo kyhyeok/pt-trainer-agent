@@ -6,13 +6,13 @@
 
 - `backend/` — Flue 에이전트(Cloudflare Workers). Flue 관련 규칙은 `backend/AGENTS.md`를 따른다.
 - `frontend/` — Vite + React 채팅 화면(확정 카드, 사진 첨부). 구조와 규칙은 `frontend/AGENTS.md`를 따른다.
-- `docs/` — 기획안 등 문서.
+- `docs/` — 기획안과 README 이미지(`docs/images/`).
 
 ## 명령어
 
 `backend/`에서 실행:
 
-- `npm test` — 일정·회차권 판정 로직 단위 테스트(`node --test`, Node 22.18 이상)
+- `npm test` — 일정·회차권 판정 로직과 첨부 검사 단위 테스트(`node --test`, Node 22.18 이상, 모델 호출 없음)
 - `npm run check:types` — 타입체크
 - `npm run dev` — 로컬 개발 서버(http://localhost:8787). 먼저 `.dev.vars.example`을 `.dev.vars`로 복사해 토큰을 넣는다. `cloudflare/...` 모델 호출은 실제 Cloudflare 계정의 Workers AI 사용량으로 잡힌다.
 
