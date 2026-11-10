@@ -139,7 +139,7 @@ describe('리뷰에서 나온 경우', () => {
 	test('이미 시작한 PT는 취소할 수 없고 출석 기록을 안내한다', () => {
 		assert.throws(
 			() => cancelSession({ appointments: [appointment], members: [member()] }, 'a1', { date: '2026-11-17', time: '10:00' }, { chargeSession: true }),
-			/이미 시작한 수업.*record_attendance/,
+			/이미 시작한 수업.*propose_attendance/,
 		);
 	});
 

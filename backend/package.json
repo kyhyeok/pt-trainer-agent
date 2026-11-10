@@ -14,7 +14,8 @@
 	},
 	"dependencies": {
 		"@flue/runtime": "^2.3.0",
-		"hono": "^4.12.32"
+		"hono": "^4.12.32",
+		"valibot": "^1.5.0"
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "^1.39.2",
@@ -24,5 +25,13 @@
 		"typescript": "^7.0.2",
 		"vite": "^8.0.14",
 		"wrangler": "^4.113.0"
+	},
+	"overrides": {
+		"@earendil-works/pi-ai": "1.4.0",
+		"@earendil-works/pi-agent-core": "1.4.0"
+	},
+	"allowScripts": {
+		"workerd@1.20261103.1": true,
+		"workerd@1.20261109.1": true
 	}
 }

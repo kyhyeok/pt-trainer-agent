@@ -354,7 +354,7 @@ export function moveAppointment(
 	// 시작했거나 끝난 수업을 옮기면 노쇼 차감을 피해 갈 수 있으므로 막는다
 	if (ctx.now && toEpochMinutes(current.date, current.start) <= toEpochMinutes(ctx.now.date, ctx.now.time)) {
 		throw new Error(
-			`이미 시작한 일정은 옮길 수 없습니다 (${current.date} ${current.start}). PT라면 출석 또는 노쇼로 기록하세요 (record_attendance)`,
+			`이미 시작한 일정은 옮길 수 없습니다 (${current.date} ${current.start}). PT라면 출석 또는 노쇼로 기록하세요 (propose_attendance)`,
 		);
 	}
 

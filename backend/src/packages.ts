@@ -193,7 +193,7 @@ export function cancelSession(
 	const policy = cancellationPolicy(appointment, now, options.noticeHours);
 	if (policy.minutesBefore <= 0) {
 		throw new Error(
-			`이미 시작한 수업은 취소할 수 없습니다 (${appointment.date} ${appointment.start}). 출석 또는 노쇼로 기록하세요 (record_attendance)`,
+			`이미 시작한 수업은 취소할 수 없습니다 (${appointment.date} ${appointment.start}). 출석 또는 노쇼로 기록하세요 (propose_attendance)`,
 		);
 	}
 	if (!policy.lateCancel) {

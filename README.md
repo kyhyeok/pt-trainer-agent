@@ -25,13 +25,23 @@
   - 회차권 잔여 횟수와 만료일 검사, 잔여 횟수보다 많이 예약되지 않도록 막기
   - 24시간 취소 규칙(기한 전 취소는 차감 없음, 당일 취소는 트레이너가 차감 여부 결정), 출석·노쇼 1회 차감
   - 시작한 수업은 옮기거나 취소할 수 없음(노쇼 차감 회피 방지), 24시간 이내 이동은 허용하되 경고
-  - 검증: 단위 테스트 66개, 명세만 보고 따로 만든 참조 구현과의 무작위 비교(교차검증), 불변식 퍼즈(18만 연산 위반 0건)
+  - 검증: 단위 테스트, 명세만 보고 따로 만든 참조 구현과의 무작위 비교(교차검증), 불변식 퍼즈(18만 연산 위반 0건)
+- 에이전트 백엔드 (Flue + Cloudflare Workers AI `glm-5.3`, 로컬 개발 서버에서 동작 확인)
+  - 대화로 일정 조회, 가능 여부 확인, 회원 회차권 현황 조회 (도구 결과로만 답함)
+  - 예약·개인 일정·변경·취소·출석 기록은 **제안만** 하고, 트레이너가 확정해야 반영
+  - 확정 시점에 최신 상태로 다시 판정해, 그사이 상황이 바뀌었으면 반영하지 않고 대안을 제시
+  - 24시간 이내 취소는 차감 여부를 트레이너에게 묻고, 확정 후 회원 안내 문구 초안 제시
+  - 확정 API(`POST /api/approvals/:conversationId`)는 같은 요청을 한 번만 처리하고 다른 결정은 409로 거부
+  - 붙여 넣은 회원 메시지 속 지시(프롬프트 주입)는 따르지 않음
+  - 확인한 시나리오: 일정 조회, 회원 요청 전달 → 확인 → 지시 → 제안 → 확정, 중복 확정, 늦은 취소와 차감 질문, 출석 기록, 회차권 초과 예약 거절, 거절, 겹치는 제안의 재판정, 프롬프트 주입
 
 ### 아직 안 되는 것
 
-- 에이전트가 위 판정 로직을 도구로 쓰는 것, 트레이너 확정 버튼 (2단계)
-- 식단 피드백 초안 (3단계)
-- 웹 화면 (4단계)
+- 확정 버튼이 있는 웹 화면 (4단계, 지금은 API로만 확정 가능)
+- 식단 사진·내용 피드백 초안 (3단계)
+- 실제 캘린더(Google Calendar 등) 연동, 회원에게 직접 메시지 발송(카카오 알림톡 등)
+- 트레이너 여러 명, 대화별 접근 권한(지금은 토큰 하나로 트레이너 1명만 사용)
+- Cloudflare 배포(로컬 개발 서버에서만 확인)
 
 ### 단계별 계획
 
@@ -39,7 +49,38 @@
 |---|---|---|
 | 0 | 저장소와 Claude Code 작업 환경 | 완료 |
 | 1 | 일정·회차권 판정 로직과 테스트 (모델 없이 코드로 판정) | 완료 |
-| 2 | 에이전트 백엔드: 일정 도구, 트레이너 확정 흐름 | 예정 |
+| 2 | 에이전트 백엔드: 일정 도구, 트레이너 확정 흐름 | 완료 |
 | 3 | 식단 피드백 스킬 (사진 입력) | 예정 |
 | 4 | 웹 화면: 채팅, 확정 버튼, 사진 첨부 | 예정 |
 | 5 | 문서 정리와 리뷰 | 예정 |
+
+## 로컬에서 실행하기
+
+필요한 것: Node.js 22.18 이상, Cloudflare 계정(Workers AI 사용, 모델 호출은 계정 사용량으로 잡힘)
+
+```sh
+cd backend
+npm install                      # workerd 설치 스크립트는 package.json의 allowScripts로 허용돼 있음
+cp .dev.vars.example .dev.vars   # AGENT_TOKEN을 긴 임의 문자열로 바꾼다
+npx wrangler login               # Workers AI 바인딩에 필요
+npm test                         # 판정 로직 단위 테스트
+npm run dev                      # http://localhost:8787
+```
+
+대화하기(REST). 답은 POST 응답이 아니라 대화 스냅숏(GET)에서 읽는다.
+
+```sh
+TOKEN=<.dev.vars의 AGENT_TOKEN>
+curl -X POST http://localhost:8787/agents/pt-trainer/demo \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"kind":"user","body":"이번 주 일정 보여줘"}'
+curl http://localhost:8787/agents/pt-trainer/demo -H "Authorization: Bearer $TOKEN"
+```
+
+에이전트가 변경을 제안하면 도구 결과에 `approvalId`가 나온다. 확정 또는 거절:
+
+```sh
+curl -X POST http://localhost:8787/api/approvals/demo \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"approvalId":"<approvalId>","decision":"approve"}'
+```

@@ -220,7 +220,7 @@ describe('교차검증·적대적 리뷰에서 나온 경우', () => {
 
 	test('이미 시작한 일정은 옮길 수 없다', () => {
 		const during = { ...ctx, now: { date: '2026-11-16', time: '19:10' } };
-		assert.throws(() => moveAppointment(during, { id: 'a1', date: '2026-11-17', start: '19:00' }), /이미 시작한 일정.*record_attendance/);
+		assert.throws(() => moveAppointment(during, { id: 'a1', date: '2026-11-17', start: '19:00' }), /이미 시작한 일정.*propose_attendance/);
 		const after = { ...ctx, now: { date: '2026-11-16', time: '20:30' } };
 		assert.throws(() => moveAppointment(after, { id: 'a1', date: '2026-11-25', start: '19:00' }), /이미 시작한 일정/);
 	});
